@@ -1,5 +1,11 @@
 # @livekit/components-react
 
+## 2.3.7
+
+### Patch Changes
+
+- Add onDeviceError callback to ControlBar - [#921](https://github.com/livekit/components-js/pull/921) ([@lukasIO](https://github.com/lukasIO))
+
 ## 2.3.6
 
 ### Patch Changes
