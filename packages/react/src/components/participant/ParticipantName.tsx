@@ -42,7 +42,7 @@ export const ParticipantName: (
 
     return (
       <span ref={ref} {...mergedProps}>
-        {name !== '' ? name : identity}
+        {name !== '' ? name?.replace("ChatGPT", "AI") : identity.replace("ChatGPT", "AI")}
         {props.children}
       </span>
     );

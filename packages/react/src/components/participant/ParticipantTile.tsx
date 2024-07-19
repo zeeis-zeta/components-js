@@ -10,7 +10,7 @@ import {
   ParticipantContext,
   TrackRefContext,
   useEnsureTrackRef,
-  useFeatureContext,
+  // useFeatureContext,
   useMaybeLayoutContext,
   useMaybeParticipantContext,
   useMaybeTrackRefContext,
@@ -18,7 +18,7 @@ import {
 import { FocusToggle } from '../controls/FocusToggle';
 import { ParticipantPlaceholder } from '../../assets/images';
 import { LockLockedIcon, ScreenShareIcon } from '../../assets/icons';
-import { VideoTrack } from './VideoTrack';
+// import { VideoTrack } from './VideoTrack';
 import { AudioTrack } from './AudioTrack';
 import { useParticipantTile } from '../../hooks';
 import { useIsEncrypted } from '../../hooks/useIsEncrypted';
@@ -113,8 +113,9 @@ export const ParticipantTile: (
     });
     const isEncrypted = useIsEncrypted(trackReference.participant);
     const layoutContext = useMaybeLayoutContext();
+    const videoRef = React.useRef<HTMLVideoElement>(null);
 
-    const autoManageSubscription = useFeatureContext()?.autoSubscription;
+    // const autoManageSubscription = useFeatureContext()?.autoSubscription;
 
     const handleSubscribe = React.useCallback(
       (subscribed: boolean) => {
@@ -131,6 +132,21 @@ export const ParticipantTile: (
       [trackReference, layoutContext],
     );
 
+    React.useEffect(() => {
+      // 仅当 videoRef 已挂载时获取本地媒体流并将其附加到视频元素
+      if (videoRef.current) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then((stream) => {
+            if (videoRef.current) {
+              videoRef.current.srcObject = stream;
+            }
+          })
+          .catch((error) => {
+            console.error('Error accessing media devices.', error);
+          });
+      }
+    }, [videoRef.current]);
+
     return (
       <div ref={ref} style={{ position: 'relative' }} {...elementProps}>
         <TrackRefContextIfNeeded trackRef={trackReference}>
@@ -141,11 +157,12 @@ export const ParticipantTile: (
                 (trackReference.publication?.kind === 'video' ||
                   trackReference.source === Track.Source.Camera ||
                   trackReference.source === Track.Source.ScreenShare) ? (
-                  <VideoTrack
-                    trackRef={trackReference}
-                    onSubscriptionStatusChanged={handleSubscribe}
-                    manageSubscription={autoManageSubscription}
-                  />
+                  // <VideoTrack
+                  //   trackRef={trackReference}
+                  //   onSubscriptionStatusChanged={handleSubscribe}
+                  //   manageSubscription={autoManageSubscription}
+                  // />
+                  <video ref={videoRef} className="lk-participant-media-video" data-lk-source="camera" data-lk-orientation="landscape" data-lk-local-participant="true" autoPlay playsInline muted></video>
                 ) : (
                   isTrackReference(trackReference) && (
                     <AudioTrack
